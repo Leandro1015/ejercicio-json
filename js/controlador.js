@@ -13,8 +13,10 @@ class Controlador {
         // Referencia de la interfaz
         const divInicio = document.getElementById('divInicio')
         // Creación de la vista
-        this.vistas.set(Vista.vinicio, new Inicio(this, divInicio))
+        const inicio = new Inicio(this, divInicio)
+        this.vistas.set(Vista.vinicio, inicio)
         this.verVista(Vista.vinicio)
+        //inicio.cargarFormulario() // Llama al método cargarFormulario en la instancia de Inicio
     }
 
     /**
