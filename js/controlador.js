@@ -1,5 +1,5 @@
 import {Vista} from './views/vista.js'
-import {Inicio} from './views/vistaeditor.js'
+import {Editor} from './views/vistaeditor.js'
 import {Modelo} from './modelo.js'
 class Controlador {  
     vistas = new Map()
@@ -11,12 +11,12 @@ class Controlador {
 
     inicializarVistas(){
         // Referencia de la interfaz
-        const divInicio = document.getElementById('divInicio')
+        const divEditor = document.getElementById('divEditor')
         // Creación de la vista
-        const inicio = new Inicio(this, divInicio)
-        this.vistas.set(Vista.vinicio, inicio)
-        this.verVista(Vista.vinicio)
-        //inicio.cargarFormulario() // Llama al método cargarFormulario en la instancia de Inicio
+        const editor = new Editor(this, divEditor)
+        this.vistas.set(Vista.veditor, editor)
+        this.verVista(Vista.veditor)
+        editor.cargarFormulario() // Llama al método cargarFormulario en la instancia de Inicio
     }
 
     /**
@@ -33,6 +33,8 @@ class Controlador {
         for(const vista of this.vistas.values())
             vista.mostrar(false)
     }
+
+    
 }
 
 // Crear una instancia del controlador cuando se carga la página

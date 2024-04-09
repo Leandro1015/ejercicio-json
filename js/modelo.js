@@ -9,7 +9,7 @@ export class Modelo {
                 {
                     "nombre": "Curso",
                     "tipo": "selección",
-                    "valores": ["1DAW2", "2DAW"]
+                    "valores": ["1DAW", "2DAW"]
                 },
                 {
                     "nombre": "Modo",

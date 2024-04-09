@@ -1,9 +1,9 @@
 export class Vista {
     static {
-      Vista.vinicio = Symbol('Inicio')
+      Vista.vinicio = Symbol('Editor')
     }
     
-     // Constructor de la clase Vista
+    // Constructor de la clase Vista
     constructor(controlador, base) {
       this.controlador = controlador
       this.base = base
