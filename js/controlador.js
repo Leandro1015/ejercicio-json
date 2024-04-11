@@ -16,7 +16,8 @@ class Controlador {
         const editor = new Editor(this, divEditor)
         this.vistas.set(Vista.veditor, editor)
         this.verVista(Vista.veditor)
-        editor.cargarFormulario() // Llama al método cargarFormulario en la instancia de Inicio
+        // Llama al método cargarFormulario en la instancia de Editor
+        editor.cargarFormulario() 
     }
 
     /**
@@ -32,9 +33,7 @@ class Controlador {
     ocultarVistas() {
         for(const vista of this.vistas.values())
             vista.mostrar(false)
-    }
-
-    
+    }   
 }
 
 // Crear una instancia del controlador cuando se carga la página

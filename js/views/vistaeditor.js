@@ -4,30 +4,40 @@ import { Modelo } from '../modelo.js'
 export class Editor extends Vista {
     constructor(controlador, base) {
         super(controlador, base)
-        this.formulario = document.createElement('form')
-        this.base.appendChild(this.formulario)
     }
 
     cargarFormulario() {
         const json = Modelo.obtenerJSON()
         console.log("Datos JSON obtenidos:", json)
-
-        const divEditor = document.createElement('div')
-        divEditor.id = 'divEditor'
-
+    
+        const divEditor = document.getElementById('divEditor')
+    
         json.campos.forEach(campo => {
-            const label = document.createElement('label')
-            label.textContent = campo.nombre + ":"
-            divEditor.appendChild(label)
-
-            if (campo.tipo === 'texto') {
-                const input = document.createElement('input')
-                input.setAttribute('type', 'text')
-                input.setAttribute('name', campo.nombre.toLowerCase())
-                divEditor.appendChild(input)
-            } 
-            else 
-                if (campo.tipo === 'selección') {
+            const campoDiv = document.createElement('div')
+            campoDiv.classList.add('campo')
+    
+            switch (campo.tipo) {
+                case 'texto':
+                    campoDiv.setAttribute('data-type', 'texto')
+    
+                    const labelTexto = document.createElement('label')
+                    labelTexto.textContent = campo.nombre + ":"
+                    campoDiv.appendChild(labelTexto)
+    
+                    const inputTexto = document.createElement('input')
+                    inputTexto.setAttribute('type', 'text')
+                    inputTexto.setAttribute('name', campo.nombre.toLowerCase())
+                    campoDiv.appendChild(inputTexto)
+    
+                    break
+    
+                case 'selección':
+                    campoDiv.setAttribute('data-type', 'seleccion')
+    
+                    const labelSeleccion = document.createElement('label')
+                    labelSeleccion.textContent = 'Curso:'
+                    campoDiv.appendChild(labelSeleccion)
+    
                     const select = document.createElement('select')
                     select.setAttribute('name', campo.nombre.toLowerCase())
                     campo.valores.forEach(valor => {
@@ -36,53 +46,68 @@ export class Editor extends Vista {
                         option.textContent = valor
                         select.appendChild(option)
                     })
-                divEditor.appendChild(select)
-            } 
-            else 
-                if (campo.tipo === 'opciones') {
+                    campoDiv.appendChild(select)
+    
+                    break
+    
+                case 'opciones':
+                    campoDiv.setAttribute('data-type', 'opciones')
+    
+                    const labelModo = document.createElement('label')
+                    labelModo.textContent = 'Modo:'
+                    campoDiv.appendChild(labelModo)
+    
                     campo.valores.forEach((valor, index) => {
-                        const input = document.createElement('input')
-                        input.setAttribute('type', 'radio')
-                        input.setAttribute('name', campo.nombre.toLowerCase())
-                        input.setAttribute('value', valor)
-
-                        const label = document.createElement('label')
-                        label.textContent = campo.valores[index]
-                        divEditor.appendChild(input)
-                        divEditor.appendChild(label)
+                        const inputRadio = document.createElement('input')
+                        inputRadio.setAttribute('type', 'radio')
+                        inputRadio.setAttribute('name', campo.nombre.toLowerCase())
+                        inputRadio.setAttribute('value', valor)
+    
+                        const labelRadio = document.createElement('label')
+                        labelRadio.textContent = campo.valores[index]
+    
+                        campoDiv.appendChild(inputRadio)
+                        campoDiv.appendChild(labelRadio)
                     })
+    
+                    break
+    
+                default:
+                    break
             }
+    
+            divEditor.appendChild(campoDiv)
             divEditor.appendChild(document.createElement('br'))
         })
-
+    
         const inputSubmit = document.createElement('input')
-        inputSubmit.setAttribute('type', 'submit')
+        inputSubmit.setAttribute('type', 'button')
         inputSubmit.setAttribute('value', 'Enviar')
         divEditor.appendChild(inputSubmit)
 
-        document.body.appendChild(divEditor)
-
-        this.formulario.addEventListener('submit', (event) => {
-            event.preventDefault()
-
-            const titulo = this.formulario.querySelector('input[name="titulo"]').value;
-            const curso = this.formulario.querySelector('select[name="curso"]').value;
-            const modo = this.formulario.querySelector('input[name="modo"]:checked').value;
-
-         
-            const jsonData = {
-                titulo: titulo,
-                curso: curso,
-                modo: modo
-            }
-
-            console.log(jsonData)
-         
-            this.controlador.procesarDatos(jsonData)
+        inputSubmit.addEventListener('click', () => {
+            const campos = divEditor.querySelectorAll('.campo')
+            const examen = {}
+        
+            campos.forEach(campo => {
+                let dataType = campo.getAttribute('data-type')
+                 let valor = null
+                switch (dataType) {
+                    case 'texto':
+                        valor = campo.querySelector('input[type="text"]').value
+                        break
+                    case 'seleccion':
+                        //console.log(campo.querySelector('select').value)
+                        break
+                    case 'opciones':
+                       // console.log(campo.querySelector('input[type="radio"]:checked').value) //Pseudoclase
+                        break
+                    default:
+                        break
+                }
+                examen[campo.querySelector('input[type="text"]').getAttribute('name')]
+            })
         })
-
         divEditor.appendChild(inputSubmit)
-
-        this.formulario.appendChild(divEditor)
     }   
 }
