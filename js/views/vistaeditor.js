@@ -91,21 +91,30 @@ export class Editor extends Vista {
         
             campos.forEach(campo => {
                 let dataType = campo.getAttribute('data-type')
-                 let valor = null
+                let valor = null
                 switch (dataType) {
                     case 'texto':
                         valor = campo.querySelector('input[type="text"]').value
                         break
                     case 'seleccion':
-                        //console.log(campo.querySelector('select').value)
+                        valor = campo.querySelector('select').value
                         break
                     case 'opciones':
                        // console.log(campo.querySelector('input[type="radio"]:checked').value) //Pseudoclase
+                       campo.querySelectorAll('input[type="radio"]').forEach(radio => {
+                        if (radio.checked) {
+                            valor = radio.value
+                            console.log("Radio seleccionado:", valor)
+                        }
+                    })
                         break
                     default:
+                        console.log("Tipo de campo no reconocido:", dataType)
                         break
                 }
                 examen[campo.querySelector('input[type="text"]').getAttribute('name')]
+                examen[campo.querySelector('select').getAttribute('name')] = valor
+                examen[radio.getAttribute('name')] = valor
             })
         })
         divEditor.appendChild(inputSubmit)
