@@ -108,7 +108,6 @@ export class Editor extends Vista {
                         campo.querySelectorAll('input[type="radio"]').forEach(radio => {
                             if (radio.checked) {
                                 valor = radio.value
-                                console.log("Radio seleccionado:", valor)
                                 nombre = radio.getAttribute('name')
                                 examen[nombre] = valor
                             }
@@ -126,6 +125,7 @@ export class Editor extends Vista {
         /*-------------------------------------------------------*/
 
         divEditor.appendChild(document.createElement('hr'))
+
         const tipo = "area"
         const json2 = Modelo.getPregunta(tipo)
         console.log("Datos JSON obtenidos:", json2)
@@ -133,11 +133,11 @@ export class Editor extends Vista {
         json2.preguntas.forEach(pregunta => {
             const campoDiv2 = document.createElement('div')
             campoDiv2.classList.add('campo')
-    
-            switch (tipo) {
-                case 'area':
-                    campoDiv2.setAttribute('data-type', 'texto')
-    
+
+            switch (pregunta.tipo) {
+                case 'textarea':
+                    campoDiv2.setAttribute('data-type', 'textarea')
+
                     const labelTexto = document.createElement('label')
                     labelTexto.textContent = pregunta.nombre + ":"
                     campoDiv2.appendChild(labelTexto)
@@ -146,7 +146,27 @@ export class Editor extends Vista {
                     textareaTexto.setAttribute('name', pregunta.nombre.toLowerCase())
                     campoDiv2.appendChild(textareaTexto)
                     break
+
+                case 'numero':
+                    campoDiv2.setAttribute('data-type', 'numero')
+
+                    const labelPuntos = document.createElement('label')
+                    labelPuntos.textContent = pregunta.nombre + ":"
+                    campoDiv2.appendChild(labelPuntos)
+
+                    const inputNumero = document.createElement('input')
+                    inputNumero.setAttribute('type', 'number')
+                    inputNumero.setAttribute('name', pregunta.nombre.toLowerCase())
+                    campoDiv2.appendChild(inputNumero)
+                    break
+
+                default:
+                    break
             }
+
+            divEditor.appendChild(campoDiv2)
+            divEditor.appendChild(document.createElement('br'))
         })
+
     }
 }
