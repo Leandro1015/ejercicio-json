@@ -1,6 +1,6 @@
 export class Vista {
     static {
-      Vista.vinicio = Symbol('Editor')
+      Vista.veditor = Symbol('Editor')
     }
     
     // Constructor de la clase Vista

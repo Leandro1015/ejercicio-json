@@ -1,5 +1,5 @@
 export class Modelo {
-    static obtenerJSON() {
+    static getCabecera() {
         return {
             "campos": [
                 {
@@ -19,4 +19,27 @@ export class Modelo {
             ]
         }
     }
+    static getPregunta(tipo) {
+        switch (tipo) {
+            case "area":
+                return {
+                    "preguntas": [
+                        {
+                            "nombre": "Texto",
+                            "tipo": "textarea"
+                        },
+                        {
+                            "nombre": "Respuesta",
+                            "tipo": "textarea"
+                        },
+                        {
+                            "nombre": "Puntos",
+                            "tipo": "numero"
+                        }
+                    ]
+                }
+            default:
+                return {}
+        }
+    }   
 }

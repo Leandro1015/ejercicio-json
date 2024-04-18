@@ -7,7 +7,7 @@ export class Editor extends Vista {
     }
 
     cargarFormulario() {
-        const json = Modelo.obtenerJSON()
+        const json = Modelo.getCabecera()
         console.log("Datos JSON obtenidos:", json)
     
         const divEditor = document.getElementById('divEditor')
@@ -92,31 +92,61 @@ export class Editor extends Vista {
             campos.forEach(campo => {
                 let dataType = campo.getAttribute('data-type')
                 let valor = null
+                let nombre = null
                 switch (dataType) {
                     case 'texto':
                         valor = campo.querySelector('input[type="text"]').value
+                        nombre = campo.querySelector('input[type="text"]').getAttribute('name')
+                        examen[nombre] = valor
                         break
                     case 'seleccion':
                         valor = campo.querySelector('select').value
+                        nombre = campo.querySelector('select').getAttribute('name')
+                        examen[nombre] = valor
                         break
                     case 'opciones':
-                       // console.log(campo.querySelector('input[type="radio"]:checked').value) //Pseudoclase
-                       campo.querySelectorAll('input[type="radio"]').forEach(radio => {
-                        if (radio.checked) {
-                            valor = radio.value
-                            console.log("Radio seleccionado:", valor)
-                        }
-                    })
+                        campo.querySelectorAll('input[type="radio"]').forEach(radio => {
+                            if (radio.checked) {
+                                valor = radio.value
+                                console.log("Radio seleccionado:", valor)
+                                nombre = radio.getAttribute('name')
+                                examen[nombre] = valor
+                            }
+                        })
                         break
                     default:
                         console.log("Tipo de campo no reconocido:", dataType)
                         break
                 }
-                examen[campo.querySelector('input[type="text"]').getAttribute('name')]
-                examen[campo.querySelector('select').getAttribute('name')] = valor
-                examen[radio.getAttribute('name')] = valor
             })
+            console.log("Examen:", examen)
         })
         divEditor.appendChild(inputSubmit)
-    }   
+
+        /*-------------------------------------------------------*/
+
+        divEditor.appendChild(document.createElement('hr'))
+        const tipo = "area"
+        const json2 = Modelo.getPregunta(tipo)
+        console.log("Datos JSON obtenidos:", json2)
+
+        json2.preguntas.forEach(pregunta => {
+            const campoDiv2 = document.createElement('div')
+            campoDiv2.classList.add('campo')
+    
+            switch (tipo) {
+                case 'area':
+                    campoDiv2.setAttribute('data-type', 'texto')
+    
+                    const labelTexto = document.createElement('label')
+                    labelTexto.textContent = pregunta.nombre + ":"
+                    campoDiv2.appendChild(labelTexto)
+
+                    const textareaTexto = document.createElement('textarea')
+                    textareaTexto.setAttribute('name', pregunta.nombre.toLowerCase())
+                    campoDiv2.appendChild(textareaTexto)
+                    break
+            }
+        })
+    }
 }
