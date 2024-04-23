@@ -108,7 +108,6 @@ export class Editor extends Vista {
                         campo.querySelectorAll('input[type="radio"]').forEach(radio => {
                             if (radio.checked) {
                                 valor = radio.value
-                                console.log("Radio seleccionado:", valor)
                                 nombre = radio.getAttribute('name')
                                 examen[nombre] = valor
                             }
@@ -126,12 +125,17 @@ export class Editor extends Vista {
         /*-------------------------------------------------------*/
 
         divEditor.appendChild(document.createElement('hr'))
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> dbffa788ad26aeacd5bafaddbb985a59689a6f93
         const tipo = "area"
         const json2 = Modelo.getPregunta(tipo)
         console.log("Datos JSON obtenidos:", json2)
 
         json2.preguntas.forEach(pregunta => {
+<<<<<<< HEAD
             this.generarCamposPregunta(divEditor, pregunta)
         })
 
@@ -157,8 +161,45 @@ export class Editor extends Vista {
             if (ultimaPregunta) {
                 divEditor.removeChild(ultimaPregunta)
                 divEditor.removeChild(divEditor.lastElementChild) // Eliminar el <br> que está después de cada pregunta
+=======
+            const campoDiv2 = document.createElement('div')
+            campoDiv2.classList.add('campo')
+
+            switch (pregunta.tipo) {
+                case 'textarea':
+                    campoDiv2.setAttribute('data-type', 'textarea')
+
+                    const labelTexto = document.createElement('label')
+                    labelTexto.textContent = pregunta.nombre + ":"
+                    campoDiv2.appendChild(labelTexto)
+
+                    const textareaTexto = document.createElement('textarea')
+                    textareaTexto.setAttribute('name', pregunta.nombre.toLowerCase())
+                    campoDiv2.appendChild(textareaTexto)
+                    break
+
+                case 'numero':
+                    campoDiv2.setAttribute('data-type', 'numero')
+
+                    const labelPuntos = document.createElement('label')
+                    labelPuntos.textContent = pregunta.nombre + ":"
+                    campoDiv2.appendChild(labelPuntos)
+
+                    const inputNumero = document.createElement('input')
+                    inputNumero.setAttribute('type', 'number')
+                    inputNumero.setAttribute('name', pregunta.nombre.toLowerCase())
+                    campoDiv2.appendChild(inputNumero)
+                    break
+
+                default:
+                    break
+>>>>>>> dbffa788ad26aeacd5bafaddbb985a59689a6f93
             }
+
+            divEditor.appendChild(campoDiv2)
+            divEditor.appendChild(document.createElement('br'))
         })
+<<<<<<< HEAD
         divEditor.appendChild(eliminarPregunta)
     }
 
@@ -198,5 +239,8 @@ export class Editor extends Vista {
 
         divEditor.appendChild(campoDiv)
         divEditor.appendChild(document.createElement('br'))
+=======
+
+>>>>>>> dbffa788ad26aeacd5bafaddbb985a59689a6f93
     }
 }
