@@ -30,7 +30,7 @@ export class Modelo {
                         },
                         {
                             "nombre": "Respuesta",
-                            "tipo": "textarea2"
+                            "tipo": "textarea"
                         },
                         {
                             "nombre": "Puntos",
