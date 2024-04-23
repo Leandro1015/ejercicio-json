@@ -1,3 +1,57 @@
-.campo {
-    margin-bottom: 20px;  
+/* Contenedor principal */
+#divEditor {
+    gap: 15px;
 }
+
+/* Estilos generales */
+.campo {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+input[type="text"],
+select,
+textarea,
+input[type="number"] {
+    width: 30%;
+    border: 2px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+select:focus,
+textarea:focus,
+input[type="number"]:focus {
+    border-color: #6c63ff;
+}
+
+input[type="button"] {
+    padding: 12px 24px;
+    background-color: #6c63ff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #6c63ff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 25px;
+}
+

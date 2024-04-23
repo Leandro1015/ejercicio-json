@@ -122,31 +122,81 @@ export class Editor extends Vista {
             console.log("Examen:", examen)
         })
         divEditor.appendChild(inputSubmit)
-
+ 
         /*-------------------------------------------------------*/
 
         divEditor.appendChild(document.createElement('hr'))
+        
         const tipo = "area"
         const json2 = Modelo.getPregunta(tipo)
         console.log("Datos JSON obtenidos:", json2)
 
         json2.preguntas.forEach(pregunta => {
-            const campoDiv2 = document.createElement('div')
-            campoDiv2.classList.add('campo')
-    
-            switch (tipo) {
-                case 'area':
-                    campoDiv2.setAttribute('data-type', 'texto')
-    
-                    const labelTexto = document.createElement('label')
-                    labelTexto.textContent = pregunta.nombre + ":"
-                    campoDiv2.appendChild(labelTexto)
+            this.generarCamposPregunta(divEditor, pregunta)
+        })
 
-                    const textareaTexto = document.createElement('textarea')
-                    textareaTexto.setAttribute('name', pregunta.nombre.toLowerCase())
-                    campoDiv2.appendChild(textareaTexto)
-                    break
+        // Botón para añadir más preguntas
+        const anadirPregunta = document.createElement('button')
+        anadirPregunta.textContent = '+ Añadir pregunta'
+        anadirPregunta.addEventListener('click', () => {
+            json2.preguntas.forEach(pregunta => {
+                this.generarCamposPregunta(divEditor, pregunta)
+            })
+        })
+        divEditor.appendChild(anadirPregunta)
+
+
+
+        
+  
+        // Botón para borrar la última pregunta
+        const eliminarPregunta = document.createElement('button')
+        eliminarPregunta.textContent = 'Borrar pregunta'
+        eliminarPregunta.addEventListener('click', () => {
+            const ultimaPregunta = divEditor.lastElementChild.previousElementSibling
+            if (ultimaPregunta) {
+                divEditor.removeChild(ultimaPregunta)
+                divEditor.removeChild(divEditor.lastElementChild) // Eliminar el <br> que está después de cada pregunta
             }
         })
+        divEditor.appendChild(eliminarPregunta)
+    }
+
+    generarCamposPregunta(divEditor, pregunta) {
+        const campoDiv = document.createElement('div')
+        campoDiv.classList.add('campo')
+
+        switch (pregunta.tipo) {
+            case 'textarea':
+                campoDiv.setAttribute('data-type', 'textarea')
+
+                const labelTexto = document.createElement('label')
+                labelTexto.textContent = pregunta.nombre + ":"
+                campoDiv.appendChild(labelTexto)
+
+                const textareaTexto = document.createElement('textarea')
+                textareaTexto.setAttribute('name', pregunta.nombre.toLowerCase())
+                campoDiv.appendChild(textareaTexto)
+                break
+
+            case 'numero':
+                campoDiv.setAttribute('data-type', 'numero')
+
+                const labelPuntos = document.createElement('label')
+                labelPuntos.textContent = pregunta.nombre + ":"
+                campoDiv.appendChild(labelPuntos)
+
+                const inputNumero = document.createElement('input')
+                inputNumero.setAttribute('type', 'number')
+                inputNumero.setAttribute('name', pregunta.nombre.toLowerCase())
+                campoDiv.appendChild(inputNumero)
+                break
+
+            default:
+                break
+        }
+
+        divEditor.appendChild(campoDiv)
+        divEditor.appendChild(document.createElement('br'))
     }
 }
