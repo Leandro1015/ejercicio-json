@@ -1,5 +1,6 @@
 import { Vista } from './vista.js'
 import { Modelo } from '../modelo.js'
+import { Descargar } from '../service/descargar.js'
 
 export class Editor extends Vista {
     constructor(controlador, base) {
@@ -8,36 +9,37 @@ export class Editor extends Vista {
 
     cargarFormulario() {
         const json = Modelo.getCabecera()
-        console.log("Datos JSON obtenidos:", json)
-    
         const divEditor = document.getElementById('divEditor')
     
+        const divCabecera = document.createElement('div')
+        divCabecera.classList.add('divCabecera')
+
         json.campos.forEach(campo => {
             const campoDiv = document.createElement('div')
             campoDiv.classList.add('campo')
-    
+
             switch (campo.tipo) {
                 case 'texto':
                     campoDiv.setAttribute('data-type', 'texto')
-    
+
                     const labelTexto = document.createElement('label')
                     labelTexto.textContent = campo.nombre + ":"
                     campoDiv.appendChild(labelTexto)
-    
+
                     const inputTexto = document.createElement('input')
                     inputTexto.setAttribute('type', 'text')
                     inputTexto.setAttribute('name', campo.nombre.toLowerCase())
                     campoDiv.appendChild(inputTexto)
-    
+
                     break
-    
+
                 case 'selección':
                     campoDiv.setAttribute('data-type', 'seleccion')
-    
+
                     const labelSeleccion = document.createElement('label')
                     labelSeleccion.textContent = 'Curso:'
                     campoDiv.appendChild(labelSeleccion)
-    
+
                     const select = document.createElement('select')
                     select.setAttribute('name', campo.nombre.toLowerCase())
                     campo.valores.forEach(valor => {
@@ -47,49 +49,50 @@ export class Editor extends Vista {
                         select.appendChild(option)
                     })
                     campoDiv.appendChild(select)
-    
+
                     break
-    
+
                 case 'opciones':
                     campoDiv.setAttribute('data-type', 'opciones')
-    
+
                     const labelModo = document.createElement('label')
                     labelModo.textContent = 'Modo:'
                     campoDiv.appendChild(labelModo)
-    
+
                     campo.valores.forEach((valor, index) => {
                         const inputRadio = document.createElement('input')
                         inputRadio.setAttribute('type', 'radio')
                         inputRadio.setAttribute('name', campo.nombre.toLowerCase())
                         inputRadio.setAttribute('value', valor)
-    
+
                         const labelRadio = document.createElement('label')
                         labelRadio.textContent = campo.valores[index]
-    
+
                         campoDiv.appendChild(inputRadio)
                         campoDiv.appendChild(labelRadio)
                     })
-    
+
                     break
-    
+
                 default:
                     break
             }
-    
-            divEditor.appendChild(campoDiv)
-            divEditor.appendChild(document.createElement('br'))
+
+            divCabecera.appendChild(campoDiv)
+            divCabecera.appendChild(document.createElement('br'))
         })
+
+        divEditor.appendChild(divCabecera)
     
         const inputSubmit = document.createElement('input')
         inputSubmit.setAttribute('type', 'button')
         inputSubmit.setAttribute('value', 'Enviar')
-        divEditor.appendChild(inputSubmit)
+        divCabecera.appendChild(inputSubmit)
 
         inputSubmit.addEventListener('click', () => {
-            const campos = divEditor.querySelectorAll('.campo')
             const examen = {}
-        
-            campos.forEach(campo => {
+            
+            divCabecera.querySelectorAll('.campo').forEach(campo => {
                 let dataType = campo.getAttribute('data-type')
                 let valor = null
                 let nombre = null
@@ -118,10 +121,43 @@ export class Editor extends Vista {
                         break
                 }
             })
+
+            examen.preguntas = []
+
+            divPreguntas.querySelectorAll('.divPregunta').forEach(divPregunta => {
+                const pregunta = {}
+                divPregunta.querySelectorAll('.campo').forEach(campo => {
+                    let dataType = campo.getAttribute('data-type')
+                    let valor = null
+                    let nombre = null
+                
+                    switch (dataType) {
+                        case 'textarea':
+                            valor = campo.querySelector('textarea').value
+                            nombre = campo.querySelector('textarea').getAttribute('name')
+                            pregunta[nombre] = valor
+                            break
+                        case 'numero':
+                            valor = campo.querySelector('input[type="number"]').value
+                            nombre = campo.querySelector('input[type="number"]').getAttribute('name')
+                            pregunta[nombre] = valor
+                            break
+                        default:
+                            console.log("Tipo de campo no reconocido:", dataType)
+                            break
+                    }
+                })
+                examen.preguntas.push(pregunta)
+            })
+
             console.log("Examen:", examen)
+            
+            // Llamada a la función download
+            Descargar.download('examen.txt', JSON.stringify(examen))
         })
-        divEditor.appendChild(inputSubmit)
-    
+
+        divCabecera.appendChild(inputSubmit)
+
         /*--------------------------------------------------------*/
 
         divEditor.appendChild(document.createElement('hr'))
@@ -136,7 +172,6 @@ export class Editor extends Vista {
 
         const tipo = "area"
         const json2 = Modelo.getPregunta(tipo)
-        console.log("Datos JSON obtenidos:", json2)
 
         json2.preguntas.forEach(pregunta => {
             this.generarCamposPregunta(divPregunta, pregunta)
@@ -183,34 +218,35 @@ export class Editor extends Vista {
     generarCamposPregunta(divPregunta, pregunta) {
         const divCampo = document.createElement('div')
         divCampo.classList.add('campo')
-
+    
         switch (pregunta.tipo) {
             case 'textarea':
                 divCampo.setAttribute('data-type', 'textarea')
-
+    
                 const labelTexto = document.createElement('label')
                 labelTexto.textContent = pregunta.nombre + ":"
                 divCampo.appendChild(labelTexto)
-
+    
                 const textareaTexto = document.createElement('textarea')
                 textareaTexto.setAttribute('name', pregunta.nombre.toLowerCase())
                 divCampo.appendChild(textareaTexto)
                 break
-
+    
             case 'numero':
                 divCampo.setAttribute('data-type', 'numero')
-
+    
                 const labelPuntos = document.createElement('label')
                 labelPuntos.textContent = pregunta.nombre + ":"
                 divCampo.appendChild(labelPuntos)
-
+    
                 const inputNumero = document.createElement('input')
                 inputNumero.setAttribute('type', 'number')
                 inputNumero.setAttribute('name', pregunta.nombre.toLowerCase())
                 divCampo.appendChild(inputNumero)
                 break
-
+    
             default:
+                console.log("Tipo de campo no reconocido:", pregunta.tipo)
                 break
         }
         divPregunta.appendChild(divCampo)
