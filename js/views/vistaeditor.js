@@ -122,29 +122,32 @@ export class Editor extends Vista {
                 }
             })
 
+            // Crear un array vacío para las preguntas
             examen.preguntas = []
 
+            // Recorrer cada divPregunta y recopilar sus campos
             divPreguntas.querySelectorAll('.divPregunta').forEach(divPregunta => {
-                const pregunta = {}
+                const pregunta = {};
                 divPregunta.querySelectorAll('.campo').forEach(campo => {
-                    let dataType = campo.getAttribute('data-type')
-                    let valor = null
-                    let nombre = null
+                    console.log("Campo:", campo);
+                    let dataType = campo.getAttribute('data-type');
+                    let valor = null;
+                    let nombre = null;
                 
                     switch (dataType) {
                         case 'textarea':
-                            valor = campo.querySelector('textarea').value
-                            nombre = campo.querySelector('textarea').getAttribute('name')
-                            pregunta[nombre] = valor
-                            break
+                            valor = campo.querySelector('textarea').value;
+                            nombre = campo.querySelector('textarea').getAttribute('name');
+                            pregunta[nombre] = valor;
+                            break;
                         case 'numero':
-                            valor = campo.querySelector('input[type="number"]').value
-                            nombre = campo.querySelector('input[type="number"]').getAttribute('name')
-                            pregunta[nombre] = valor
-                            break
+                            valor = campo.querySelector('input[type="number"]').value;
+                            nombre = campo.querySelector('input[type="number"]').getAttribute('name');
+                            pregunta[nombre] = valor;
+                            break;
                         default:
-                            console.log("Tipo de campo no reconocido:", dataType)
-                            break
+                            console.log("Tipo de campo no reconocido:", dataType);
+                            break;
                     }
                 })
                 examen.preguntas.push(pregunta)
@@ -177,42 +180,86 @@ export class Editor extends Vista {
             this.generarCamposPregunta(divPregunta, pregunta)
         })
 
-        // Botón para borrar la pregunta actual
-        const eliminarPregunta = document.createElement('button')
-        eliminarPregunta.textContent = 'Borrar pregunta'
-        eliminarPregunta.addEventListener('click', () => {
-            divPreguntas.removeChild(divPregunta)
-        })
-        divPregunta.appendChild(eliminarPregunta)
-    
-        divPreguntas.appendChild(divPregunta)
-        divEditor.appendChild(divPreguntas)
+        const selectTipoPregunta = document.createElement('select');
+        selectTipoPregunta.setAttribute('name', 'tipoPregunta');
+        const optionTexto = document.createElement('option');
+        optionTexto.value = 'texto';
+        optionTexto.textContent = 'Texto';
+        const optionArea = document.createElement('option');
+        optionArea.value = 'area';
+        optionArea.textContent = 'Área';
+        selectTipoPregunta.appendChild(optionTexto);
+        selectTipoPregunta.appendChild(optionArea);
+        divPreguntas.appendChild(selectTipoPregunta);
 
         // Botón para añadir más preguntas
-        const anadirPregunta = document.createElement('button')
-        anadirPregunta.textContent = 'Añadir pregunta'
+        const anadirPregunta = document.createElement('button');
+        anadirPregunta.textContent = 'Añadir pregunta';
         anadirPregunta.addEventListener('click', () => {
-            const nuevaPreguntaDiv = document.createElement('div')
-            nuevaPreguntaDiv.classList.add('divPregunta')
+            const tipoSeleccionado = selectTipoPregunta.value;
+            const nuevaPreguntaDiv = document.createElement('div');
+            nuevaPreguntaDiv.classList.add('divPregunta');
 
-            json2.preguntas.forEach(pregunta => {
-                this.generarCamposPregunta(nuevaPreguntaDiv, pregunta)
-            })
+            if (tipoSeleccionado === 'texto') {
+                const labelPregunta = document.createElement('label');
+                labelPregunta.textContent = "Pregunta: ";
+                nuevaPreguntaDiv.appendChild(labelPregunta);
+
+                const inputTexto = document.createElement('input');
+                inputTexto.setAttribute('type', 'text');
+                inputTexto.setAttribute('name', 'texto');
+                nuevaPreguntaDiv.appendChild(inputTexto);
+
+                const labelRespuesta = document.createElement('label');
+                labelRespuesta.textContent = "Respuesta: ";
+                nuevaPreguntaDiv.appendChild(labelRespuesta);
+
+                const inputRespuesta = document.createElement('input');
+                inputRespuesta.setAttribute('type', 'text');
+                inputRespuesta.setAttribute('name', 'respuesta');
+                nuevaPreguntaDiv.appendChild(inputRespuesta);
+            } else if (tipoSeleccionado === 'area') {
+                const labelPregunta = document.createElement('label');
+                labelPregunta.textContent = "Pregunta: ";
+                nuevaPreguntaDiv.appendChild(labelPregunta);
+
+                const textareaArea = document.createElement('textarea');
+                textareaArea.setAttribute('name', 'area');
+                nuevaPreguntaDiv.appendChild(textareaArea);
+
+                const labelRespuesta = document.createElement('label');
+                labelRespuesta.textContent = "Respuesta: ";
+                nuevaPreguntaDiv.appendChild(labelRespuesta);
+
+                const textareaRespuesta = document.createElement('textarea');
+                textareaRespuesta.setAttribute('name', 'respuesta');
+                nuevaPreguntaDiv.appendChild(textareaRespuesta);
+            }
+
+            // Campo para los puntos
+            const labelPuntos = document.createElement('label');
+            labelPuntos.textContent = "Puntos: ";
+            nuevaPreguntaDiv.appendChild(labelPuntos);
+
+            const inputPuntos = document.createElement('input');
+            inputPuntos.setAttribute('type', 'number');
+            inputPuntos.setAttribute('name', 'puntos');
+            nuevaPreguntaDiv.appendChild(inputPuntos);
 
             // Botón para borrar la nueva pregunta
-            const eliminarNuevaPregunta = document.createElement('button')
-            eliminarNuevaPregunta.textContent = 'Borrar pregunta'
+            const eliminarNuevaPregunta = document.createElement('button');
+            eliminarNuevaPregunta.textContent = 'Borrar pregunta';
             eliminarNuevaPregunta.addEventListener('click', () => {
-                divPreguntas.removeChild(nuevaPreguntaDiv)
-            })
-            nuevaPreguntaDiv.appendChild(eliminarNuevaPregunta)
+                divPreguntas.removeChild(nuevaPreguntaDiv);
+            });
+            nuevaPreguntaDiv.appendChild(eliminarNuevaPregunta);
 
             // Agregar la nueva pregunta al divPreguntas
-            divPreguntas.appendChild(nuevaPreguntaDiv)
-        })
+            divPreguntas.appendChild(nuevaPreguntaDiv);
+        });
 
-        // Agregar el botón de añadir pregunta al divEditor
-        divEditor.appendChild(anadirPregunta)
+        divEditor.appendChild(divPreguntas);
+        divEditor.appendChild(anadirPregunta);
     }
 
     generarCamposPregunta(divPregunta, pregunta) {
