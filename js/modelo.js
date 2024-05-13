@@ -1,4 +1,4 @@
-export class Modelo {
+export class Examen {
     static getCabecera() {
         return {
             "campos": [
@@ -19,18 +19,40 @@ export class Modelo {
             ]
         }
     }
+
+    static getPreguntas() {
+        return ["texto", "area"]
+    }
+
     static getPregunta(tipo) {
         switch (tipo) {
-            case "area":
+            case "texto":
                 return {
                     "preguntas": [
                         {
                             "nombre": "Texto",
-                            "tipo": "textarea"
+                            "tipo": "texto"
                         },
                         {
                             "nombre": "Respuesta",
-                            "tipo": "textarea"
+                            "tipo": "texto"
+                        },
+                        {
+                            "nombre": "Puntos",
+                            "tipo": "numero"
+                        }
+                    ]
+                }
+            case "area":
+                return {
+                    "preguntas": [
+                        {
+                            "nombre": "Pregunta",
+                            "tipo": "texto"
+                        },
+                        {
+                            "nombre": "Respuesta",
+                            "tipo": "texto"
                         },
                         {
                             "nombre": "Puntos",
@@ -41,5 +63,5 @@ export class Modelo {
             default:
                 return {}
         }
-    }   
+    }
 }
